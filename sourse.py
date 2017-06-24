@@ -32,68 +32,152 @@ def getCountDeclarationOnPage(html):
 
 
 def parse(html):
+
+	Declaration = {}
+
 	soup = BeautifulSoup(html,'html.parser')
 	title = soup.find('h1').text
-	title = title.strip('\n\t ')
-	#--Доделать парсинг хедера
+	Declaration['title'] = title.strip('\n\t ')
+	
 
 	#------------------Цена и Цена за метр (если есть)----------------------------------------------
-	price = int(soup.find('p', class_='price').text[:-5].replace(' ',''))
-
+	price = soup.find('p', class_='price')
+	if (price is not None):
+		price = int(price.text[:-5].replace(' ',''))
+		Declaration['price'] = int(soup.find('p', class_='price').text[:-5].replace(' ',''))
+		
 	meterPrice = soup.find('p', class_='meterPrice')
 	if (meterPrice is not None):
 		meterPrice = meterPrice.text[:-13]
 		try:
-			meterPrice = int(meterPrice)
+			Declaration['meterPrice'] = int(meterPrice)
 		except ValueError:
-			meterPrice = soup.find('p', class_='meterPrice').text
-			meterPrice.strip('\n\t ')
+			pass
 
 	#------------------Теги поиска------------------------------------------------------------------
-	keyWords = soup.find('div', class_='col-md-6 unpad')    
-	keyWords = keyWords.find('a').text.replace(' ','').split('/')
+	keyWords = soup.find('div', class_='col-md-6 unpad')
+	keyWords = keyWords.find('a').text.split('/')
+	for i in range(len(keyWords)):
+		keyWords[i] = keyWords[i].strip('\n\t ')
+
+	Declaration['keyWords'] = keyWords
 
 	#------------------Описание от автора-----------------------------------------------------------
-	Description = soup.find('blockquote').text.strip('\n\t ')
+	Declaration['description'] = soup.find('blockquote').text.strip('\n\t ')
 
 	#------------------Дата опубликования-----------------------------------------------------------
-	Date = soup.find('p', class_='detailDate').text[14:24]
+	Declaration['date'] = soup.find('p', class_='detailDate').text[14:24]
 
 	#------------------Адрес объекта----------------------------------------------------------------
-	Address = soup.find('div', class_='col-md-7').find('p').text
+	Declaration['address'] = soup.find('div', class_='col-md-7').find('p').text
+
+	#------------------Основные поля----------------------------------------------------------------
+
+	if(keyWords[1] == 'продажа'):
+		if(keyWords[2] == 'квартиры'):
+			Declaration['New building/Resale'] = keyWords[3].strip('\n\t ').capitalize() # не знаю как назвать, это "Новострой / Вторичка", пусть будет q
+			fillingFields_Sale_Flat(soup,Declaration)
+		elif(keyWords[2] == 'комнаты'):
+			print(2)
+		elif(keyWords[2] == 'дома'):
+			print(3)
+		elif(keyWords[2] == 'коммерческая недвижимость'):
+			print(4)
+		elif(keyWords[2] == 'нежилая недвижимость'):
+			if(keyWords[3] == 'гаражи, стоянки'):
+				print(5)
+			elif(keyWords[3] == 'дачи, участки'):
+				print(6)
+			elif(keyWords[3] == 'другие объекты'):
+				print(61)
+		elif(keyWords[2] == 'участки под строительство'):
+			print(7)
+	elif(keyWords[1] == 'сдаю'):
+		if((keyWords[2] == 'квартиры посуточно') or (keyWords[2] == 'квартиры на длительный срок')):
+			print(8)
+		elif(keyWords[2] == 'комнаты'):
+			print(9)
+		elif(keyWords[2] == 'дома'):
+			print(10)
+		elif(keyWords[2] == 'коммерческая недвижимость'):
+			print(11)
+		elif(keyWords[2] == 'нежилая недвижимость'):
+			if(keyWords[3] == 'гаражи, стоянки'):
+				print(12)
+			elif(keyWords[3] == 'дачи, участки '):
+				print(13)
+	elif(keyWords[1] == 'покупка'):
+		if(keyWords[2] == 'жилая недвижимость'):
+			print(14)
+		elif(keyWords[2] == 'коммерческая недвижимость'):
+			print(15)
+	elif(keyWords[1] == 'обмен'):
+		if(keyWords[2] == 'жилая недвижимость'):
+			print(16)
+		elif(keyWords[2] == 'нежилая недвижимость'):
+			print(17)
+	elif(keyWords[1] == 'сниму'):
+		if(keyWords[2] == 'жилая недвижимость'):
+			print(18)
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+# 		q = keyWords[3].strip('\n\t ').capitalize() # не знаю как назвать, это "Новострой / Вторичка", пусть будет q
+# 		fillingFields_Flat()
+# 	elif(keyWords[2] is 'комнаты'):
+# 		fillingFields_Room()
+# 	elif(keyWords[2] is 'комнаты'):
+# 		fillingFields_House()
+# 	elif(keyWords[2] is 'дома'):
+# 		fillingFields_Room()
+# 			fillingFields_Commercial()
+	
+
+
+# fillingFields_Dacha()
+# fillingFields_Garage()
 
 	
 
 
 def main():
-	# html = get_html(baseUrl + '/nedvizimost/?page=1')
-	# countPage = getPageCount(html)
+	html = get_html(baseUrl + '/nedvizimost/?page=1')
+	countPage = getPageCount(html)
 
-	htmlDeclaration = get_html('http://domino-rf.ru/nedvizimost/prodazha/nezhilaya-nedvizhimost/garazhi-stoyanki/garazh-kirpichnyy-8-m-na-3-m-1447733.html?page=1')
-	parse(htmlDeclaration)
-
-
+	# htmlDeclaration = get_html('http://domino-rf.ru/nedvizimost/prodazha/nezhilaya-nedvizhimost/drugie-obekty/ovoshchekhranilishche-obshch-quot-zarya-quot-1444870.html?fSearch=&fReg=&prop_2_from=&prop_2_to=&prop_1_from=&prop_1_to=')
+	# parse(htmlDeclaration)
 
 
-	# for i in range(1,countPage + 1):
-	# 	urlPage = baseUrl + '/nedvizimost/?page=' + str(i)
+
+
+	for i in range(1,countPage + 1):
+		urlPage = baseUrl + '/nedvizimost/?page=' + str(i)
 		
-	# 	html = get_html(urlPage)
-	# 	soup = BeautifulSoup(html, 'html.parser')
-	# 	divContent = soup.find('div', class_ = 'col-md-9 cusDirStyle')
-	# 	massItm = divContent.findAll('div',class_ = 'col-md-12 catItem unpad')
-	# 	massItm = massItm + divContent.findAll('div',class_ = 'col-md-12 catItem unpad premium')
+		html = get_html(urlPage)
+		soup = BeautifulSoup(html, 'html.parser')
+		divContent = soup.find('div', class_ = 'col-md-9 cusDirStyle')
+		massItm = divContent.findAll('div',class_ = 'col-md-12 catItem unpad')
+		massItm = massItm + divContent.findAll('div',class_ = 'col-md-12 catItem unpad premium')
 
-	# 	for j in massItm:
-	# 		a = j.find('a')
-	# 		href = a['href']
-	# 		urlDeclaration = baseUrl + href
-	# 		htmlDeclaration = get_html(urlDeclaration)
-	# 		parse(htmlDeclaration)
+		for j in massItm:
+			a = j.find('a')
+			href = a['href']
+			urlDeclaration = baseUrl + href
+			print(urlDeclaration)
+			htmlDeclaration = get_html(urlDeclaration)
+			parse(htmlDeclaration)
 
 
 
@@ -106,16 +190,5 @@ if __name__ == '__main__':
 
 
 
-
-# http://domino-rf.ru/nedvizimost/prodazha/nezhilaya-nedvizhimost/garazhi-stoyanki/garazh-kirpichnyy-8-m-na-3-m-1447733.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/komnaty/prodam-komnatu-v-4-k-kvartire-volgograd-krasnoarmeyskiy-r-n-pr-stoletova-2a-1432866.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/doma/prodam-dom-volgograd-krasnoarmeyskiy-r-n-minskaya-1374165.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/kvartiry/vtorichka/prodam-2-k-kvartiru-volgograd-krasnoarmeyskiy-r-n-stoletova-44-1191055.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/doma/prodam-dom-volgograd-krasnoarmeyskiy-r-n-ul-keramicheskaya-1174773.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/kvartiry/vtorichka/prodam-3-k-kvartiru-sredneakhtubinskiy-krasnyy-sad-rechnaya-25-1447712.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/doma/prodam-dom-tovarkovo-bogoroditskiy-rayon-tovarkovskiy-1447704.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/kvartiry/vtorichka/prodam-1-k-kvartiru-volgograd-krasnoarmeyskiy-r-n-dotsenko-43-1447700.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/kvartiry/vtorichka/prodam-2-k-kvartiru-volgograd-dzerzhinskiy-r-n-ul-51-y-gvardeyskoy-9-1447693.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/kvartiry/vtorichka/prodam-1-k-kvartiru-volgograd-kirovskiy-r-n-topolevaya-9-1255596.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/nezhilaya-nedvizhimost/drugie-obekty/ovoshchekhranilishche-1447689.html?page=1
-# http://domino-rf.ru/nedvizimost/prodazha/nezhilaya-nedvizhimost/garazhi-stoyanki/garazh-kirpichnyy-5-m-na-3-m-1447682.html?page=1
+def fillingFields_Sale_Flat(soup,Declaration):
+	
