@@ -713,6 +713,7 @@ def main():
 
 if __name__ == '__main__':
 	MassDeclaration = []
+	print('Я работаю, я не завис...')
 	main()
 
     count = 0
@@ -725,3 +726,5 @@ if __name__ == '__main__':
             count += 1
         fp.write( u'}\n' )
         fp.close()
+		
+	print('Я закончил работу')
