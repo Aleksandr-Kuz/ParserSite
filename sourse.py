@@ -11,13 +11,16 @@ baseUrl = 'http://domino-rf.ru'
 
 def fillingFields_Sale_Flat(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
 
 			if(characteristic == 'Общая площадь'):
-				Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['total area'] = float(col[1].text.strip('\n\t '))	
 			elif(characteristic == 'Количество комнат'):
 				Declaration['number rooms'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Этаж'):
@@ -25,15 +28,25 @@ def fillingFields_Sale_Flat(soup,Declaration):
 			elif(characteristic == 'Этажность'):
 				Declaration['number of storeys'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Жилая площадь'):
-				Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['living space'] = float(col[1].text.strip('\n\t '))	
 			elif(characteristic == 'Площадь кухни'):
-				Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['kitchen area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Тип дома'):
 				Declaration['type house'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Ремонт'):
 				Declaration['repairs'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Санузел'):
 				Declaration['bathroom'] = col[1].text.strip('\n\t ')
+			elif(characteristic == 'Наличие городского телефона'):
+				Declaration['city phone'] = col[1].text.strip('\n\t ')
+			elif(characteristic == 'Наличие интернета'):
+				Declaration['internet'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Балкон/лоджия'):
 				Declaration['balcony'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Состояние дома'):
@@ -46,7 +59,7 @@ def fillingFields_Sale_Flat(soup,Declaration):
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Sale_Room(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
@@ -54,7 +67,10 @@ def fillingFields_Sale_Room(soup,Declaration):
 			if(characteristic == 'Количество хозяев в квартире'):
 				Declaration['number hosts'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Площадь комнаты'):
-				Declaration['area room'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['area room'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['area room'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Количество комнат'):
 				Declaration['number rooms'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Этаж'):
@@ -62,9 +78,15 @@ def fillingFields_Sale_Room(soup,Declaration):
 			elif(characteristic == 'Этажность'):
 				Declaration['number of storeys'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Жилая площадь'):
-				Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['living space'] = float(col[1].text.strip('\n\t '))	
 			elif(characteristic == 'Площадь кухни'):
-				Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['kitchen area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Тип дома'):
 				Declaration['type house'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Ремонт'):
@@ -83,17 +105,23 @@ def fillingFields_Sale_Room(soup,Declaration):
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Sale_House(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
 
 			if(characteristic == 'Общая площадь'):
-				Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['total area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Количество комнат'):
 				Declaration['number rooms'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Площадь участка'):
-				Declaration['land area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['land area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['land area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Продаваемая часть недвижимости'):
 				Declaration['sold property'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Удобства'):
@@ -116,18 +144,21 @@ def fillingFields_Sale_House(soup,Declaration):
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Sale_Commercial(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
 
 			if(characteristic == 'Общая площадь'):
-				Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['total area'] = float(col[1].text.strip('\n\t '))
 			else:
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Sale_nonResidential_Garage(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
@@ -135,20 +166,30 @@ def fillingFields_Sale_nonResidential_Garage(soup,Declaration):
 			if(characteristic == 'ГСК'):
 				Declaration['GSK'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Длина гаража'):
-				Declaration['length'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['length'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['length'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Ширина гаража'):
-				Declaration['width'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['width'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['width'] = float(col[1].text.strip('\n\t '))
+			elif(characteristic == 'Материал стен'):
+				Declaration['wall material'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Наличие электричества'):
 				Declaration['electricity'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Наличие подвала'):
 				Declaration['basement'] = col[1].text.strip('\n\t ')
+			elif(characteristic == 'Наличие погреба'):
+				Declaration['cellar'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Тип объекта'):
 				Declaration['Object type'] = col[1].text.strip('\n\t ')
 			else:
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Sale_nonResidential_Dacha(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
@@ -156,28 +197,36 @@ def fillingFields_Sale_nonResidential_Dacha(soup,Declaration):
 			if(characteristic == 'Садовое товарищество'):
 				Declaration['garden community'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Площадь участка'):
-				Declaration['land area'] = int(col[1].text.strip('\n\t '))
-			elif(characteristic == 'Другие строения'):
+				try:
+					Declaration['land area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['land area'] = float(col[1].text.strip('\n\t '))
+			elif(characteristic == 'Другие постройки'):
 				Declaration['other buildings'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Наличие электричества'):
 				Declaration['electricity'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Проведена вода'):
 				Declaration['there is water'] = col[1].text.strip('\n\t ')
+			elif(characteristic == 'Проведен газ'):
+				Declaration['gas'] = col[1].text.strip('\n\t ')
 			else:
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Sale_nonResidential_Other(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Sale_Building_land(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
 
 			if(characteristic == 'Площадь участка'):
-				Declaration['land area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['land area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['land area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Наличие электричества'):
 				Declaration['electricity'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Проведена вода'):
@@ -189,13 +238,16 @@ def fillingFields_Sale_Building_land(soup,Declaration):
 
 def fillingFields_Rental_Flat(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
 
 			if(characteristic == 'Общая площадь'):
-				Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['total area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Количество комнат'):
 				Declaration['number rooms'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Этаж'):
@@ -203,9 +255,15 @@ def fillingFields_Rental_Flat(soup,Declaration):
 			elif(characteristic == 'Этажность'):
 				Declaration['number of storeys'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Жилая площадь'):
-				Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['living space'] = float(col[1].text.strip('\n\t '))	
 			elif(characteristic == 'Площадь кухни'):
-				Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['kitchen area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Тип дома'):
 				Declaration['type house'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Ремонт'):
@@ -230,7 +288,7 @@ def fillingFields_Rental_Flat(soup,Declaration):
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Rental_Room(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
@@ -238,7 +296,10 @@ def fillingFields_Rental_Room(soup,Declaration):
 			if(characteristic == 'Количество хозяев в квартире'):
 				Declaration['number hosts'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Площадь комнаты'):
-				Declaration['area room'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['area room'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['area room'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Количество комнат'):
 				Declaration['number rooms'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Этаж'):
@@ -246,9 +307,15 @@ def fillingFields_Rental_Room(soup,Declaration):
 			elif(characteristic == 'Этажность'):
 				Declaration['number of storeys'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Жилая площадь'):
-				Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['living space'] = float(col[1].text.strip('\n\t '))	
 			elif(characteristic == 'Площадь кухни'):
-				Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['kitchen area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Тип дома'):
 				Declaration['type house'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Ремонт'):
@@ -267,17 +334,23 @@ def fillingFields_Rental_Room(soup,Declaration):
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Rental_House(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
 
 			if(characteristic == 'Общая площадь'):
-				Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['total area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Количество комнат'):
 				Declaration['number rooms'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Площадь участка'):
-				Declaration['land area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['land area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['land area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Продаваемая часть недвижимости'):
 				Declaration['sold property'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Удобства'):
@@ -299,18 +372,22 @@ def fillingFields_Rental_House(soup,Declaration):
 			else:
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Rental_Commercial(soup,Declaration):
-	if(row is not None):
+	row = soup.find_all( 'tr' )
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
 
 			if(characteristic == 'Общая площадь'):
-				Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['total area'] = float(col[1].text.strip('\n\t '))
 			else:
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Rental_nonResidential_Garage(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
@@ -318,24 +395,35 @@ def fillingFields_Rental_nonResidential_Garage(soup,Declaration):
 			if(characteristic == 'ГСК'):
 				Declaration['GSK'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Длина гаража'):
-				Declaration['length'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['length'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['length'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Ширина гаража'):
-				Declaration['width'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['width'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['width'] = float(col[1].text.strip('\n\t '))
+			elif(characteristic == 'Материал стен'):
+				Declaration['wall material'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Наличие электричества'):
 				Declaration['electricity'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Наличие подвала'):
 				Declaration['basement'] = col[1].text.strip('\n\t ')
+			elif(characteristic == 'Наличие погреба'):
+				Declaration['cellar'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Тип объекта'):
 				Declaration['Object type'] = col[1].text.strip('\n\t ')
 			else:
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
+				print(characteristic)
 def fillingFields_Rental_nonResidential_Dacha(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Purchase_Residential_Properties(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
@@ -346,7 +434,7 @@ def fillingFields_Purchase_Residential_Properties(soup,Declaration):
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Purchase_Commercial_Property(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
@@ -357,25 +445,36 @@ def fillingFields_Purchase_Commercial_Property(soup,Declaration):
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Exchange_Residential_Properties(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
 
 			if(characteristic == 'Общая площадь'):
-				Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['total area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['total area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Этаж'):
 				Declaration['floor'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Этажность'):
 				Declaration['number of storeys'] = int(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Жилая площадь'):
-				Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['living space'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['living space'] = float(col[1].text.strip('\n\t '))	
 			elif(characteristic == 'Площадь кухни'):
-				Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				try:
+					Declaration['kitchen area'] = int(col[1].text.strip('\n\t '))
+				except ValueError:
+					Declaration['kitchen area'] = float(col[1].text.strip('\n\t '))
 			elif(characteristic == 'Ремонт'):
 				Declaration['repairs'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Санузел'):
 				Declaration['bathroom'] = col[1].text.strip('\n\t ')
+			elif(characteristic == 'Наличие интернета'):
+				Declaration['internet'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Балкон/лоджия'):
 				Declaration['balcony'] = col[1].text.strip('\n\t ')
 			elif(characteristic == 'Состояние дома'):
@@ -390,7 +489,7 @@ def fillingFields_Exchange_Residential_Properties(soup,Declaration):
 				print('=========I DON`T KNOW WATH IS THIS!!!=========')
 def fillingFields_Rent_Residential_Properties(soup,Declaration):
 	row = soup.find_all('tr')
-	if(row is not None):
+	if(len(row) != 0):
 		for i in row:
 			col = i.find_all('td')
 			characteristic = col[0].text.strip('\n\t ')
@@ -454,7 +553,11 @@ def parse(html, urlDeclaration):
 	Declaration['keyWords'] = keyWords
 
 	#------------------Описание от автора-----------------------------------------------------------
-	Declaration['description'] = soup.find('blockquote').text.strip('\n\t ')
+	description = soup.find('blockquote')
+	if (description != None):
+		Declaration['description'] = description.text.strip('\n\t ')
+	else:
+		Declaration['description'] = 'no information'	
 
 	#------------------Дата опубликования-----------------------------------------------------------
 	Declaration['date'] = soup.find('p', class_='detailDate').text[14:24]
@@ -463,7 +566,13 @@ def parse(html, urlDeclaration):
 	Declaration['address'] = soup.find('div', class_='col-md-7').find('p').text
 
 	#------------------Информация об авторе---------------------------------------------------------
+	phone = soup.find('div', class_='panel-body').find('img')
+	phone = phone['src']
+	phone = baseUrl + phone
+	Declaration['about author'] =  soup.find('div', class_='panel-body').find
 
+	#------------------URL объявления---------------------------------------------------------------
+	Declaration['URL'] = urlDeclaration
 
 	#------------------Основные поля----------------------------------------------------------------
 
@@ -532,6 +641,7 @@ def parse(html, urlDeclaration):
 		if(keyWords[2] == 'жилая недвижимость'):
 			fillingFields_Rent_Residential_Properties(soup,Declaration)
 
+	MassDeclaration.append(Declaration)
 
 
 def main():
@@ -540,7 +650,7 @@ def main():
 
 	# htmlDeclaration = get_html('http://domino-rf.ru/nedvizimost/prodazha/nezhilaya-nedvizhimost/drugie-obekty/ovoshchekhranilishche-obshch-quot-zarya-quot-1444870.html?fSearch=&fReg=&prop_2_from=&prop_2_to=&prop_1_from=&prop_1_to=')
 	# parse(htmlDeclaration)
-
+	
 
 
 
@@ -566,4 +676,5 @@ def main():
 
 
 if __name__ == '__main__':
+	MassDeclaration = []
 	main()
