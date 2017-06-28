@@ -716,16 +716,16 @@ if __name__ == '__main__':
 	print('Я работаю, я не завис...')
 	main()
 
-count = 0
-with open( 'data.json', 'w', encoding = "utf-8" ) as fp:
-    fp.write( u'{\n' )
-    for i in MassDeclaration:
-        fp.write( u'\t"' + str( count ) + '" : ' )
-        json.dump( i, fp, sort_keys = True, indent = 5, ensure_ascii = False )
-        fp.write( u',\n' )
-        count += 1
-    fp.write( u'\t"count declaration" : ' + str(count-1) + '\n' )
-    fp.write( u'}\n' )
-    fp.close()
+	count = 0
+	with open( 'data.json', 'w', encoding = "utf-8" ) as fp:
+		fp.write( u'{\n' )
+		for i in MassDeclaration:
+			fp.write( u'\t"' + str( count ) + '" : ' )
+			json.dump( i, fp, sort_keys = True, indent = 5, ensure_ascii = False )
+			fp.write( u',\n' )
+			count += 1
+		fp.write( u'\t"count declaration" : ' + str(count-1) + '\n' )
+		fp.write( u'}\n' )
+		fp.close()
 
-print( 'Я закончил работу' )
+	print( 'Я закончил работу' )
