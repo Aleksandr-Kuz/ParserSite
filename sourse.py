@@ -5,6 +5,7 @@ import json
 
 
 baseUrl = 'http://domino-rf.ru'
+MassDeclaration = []
 
 
 def fillingFields_Sale_Flat(soup,Declaration):
@@ -532,12 +533,65 @@ def get_html(url):
 
 def getPageCount(html):
 	soup = BeautifulSoup(html, 'html.parser')
-	div = soup.find('div', class_ = 'pull-left')
-	countDeclaration = int(div.text[28:35])
 	
+	div = soup.find('div', class_ = 'pull-left').text.strip('\n\t ')
+	countDeclaration = ''.join([i if i.isdigit() else ' ' for i in div])
+	countDeclaration = countDeclaration.split()
+	countDeclaration = int(countDeclaration[-1])
+
 	div = soup.find('div', class_ = 'pull-right')
 	return int(div.find_all('li')[-2].text)
 	# return countDeclaration//getCountDeclarationOnPage(html) + 1
+
+def getCountFloors (subHeading, Declaration):
+    SubHeading = subHeading.text.strip( '\n\t ' )
+    
+    # Обработка случаев: "*число*-эт"
+    if (SubHeading.find( '-эт' ) != -1):
+        pos = SubHeading.find( '-эт' )
+        floor = ''
+        count = 1
+        while True:
+            if (SubHeading[pos - count].isdigit()):
+                floor = floor + SubHeading[pos - count]
+                count += 1
+            else:
+                break
+        if(len(floor) == 1):
+            Declaration['number of storeys'] = int(floor)
+        else:
+            Declaration['number of storeys'] = int(floor[::-1])
+    # Обработка случаев: "*число*-ур"
+    elif((SubHeading.find( '-ур' ) != -1)):
+        pos = SubHeading.find( '-ур' )
+        floor = ''
+        count = 1
+        while True:
+            # Пока идут числа копируем в строку floor
+            if (SubHeading[pos - count].isdigit()):
+                floor = floor + SubHeading[pos - count]
+                count += 1
+            # Есть случаи дробного чиса уровней, так что обрабатываем случай с ","
+            if (SubHeading[pos - count] == ','):
+                floor = floor + ','
+                count += 1
+                while True:
+                    if (SubHeading[pos - count].isdigit()):
+                        floor = floor + SubHeading[pos - count]
+                        count += 1
+                    else:
+                        break
+                break
+            # Иначе выходим
+            else:
+                break
+        if(len(floor) == 1):
+            Declaration['number of storeys'] = int( floor )
+        else:
+            try:
+                Declaration['number of storeys'] = int(floor[::-1])
+            except ValueError:
+                Declaration['number of storeys'] = float(floor[::-1])
 
 
 def getCountDeclarationOnPage(html):
@@ -548,12 +602,12 @@ def getCountDeclarationOnPage(html):
 	return len(massItm)
 
 
-def parse(html, urlDeclaration):
+def parse(html, urlDeclaration = None , subHeading = None):
 
 	Declaration = {}
 
 	soup = BeautifulSoup(html,'html.parser')
-	# title = soup.find('h1')
+
 	title = soup.findAll('div', class_ = 'col-md-9')[1]
 	title = title.find('h1')
 	if(title is not None):
@@ -585,7 +639,7 @@ def parse(html, urlDeclaration):
 
 	#------------------Описание от автора-----------------------------------------------------------
 	description = soup.find('blockquote')
-	if (description != None):
+	if (description  is not None):
 		Declaration['description'] = description.text.strip('\n\t ')
 	else:
 		Declaration['description'] = 'no information'	
@@ -594,8 +648,10 @@ def parse(html, urlDeclaration):
 	Declaration['date'] = soup.find('p', class_='detailDate').text[14:24]
 
 	#------------------Адрес объекта----------------------------------------------------------------
-	Declaration['address'] = soup.find('div', class_='col-md-7').find('p').text
-
+	address = soup.find('div', class_='col-md-7').find('p')
+	if(address is not None):
+		Declaration['address'] = address.text
+	
 	#------------------Информация об авторе---------------------------------------------------------
 	phone = soup.find('div', class_='panel-body')
 	if(phone is not None):
@@ -605,7 +661,8 @@ def parse(html, urlDeclaration):
 		Declaration['about author'] =  phone
 
 	#------------------URL объявления---------------------------------------------------------------
-	Declaration['url'] = urlDeclaration
+	if(urlDeclaration is not None):
+        Declaration['url'] = urlDeclaration
 
 	#------------------Общее число просмотров-------------------------------------------------------
 	views = soup.findAll('div', class_='col-md-6')[0]
@@ -626,6 +683,8 @@ def parse(html, urlDeclaration):
 				fillingFields_Sale_Room(soup,Declaration)
 			elif(keyWords[2] == 'дома'):
 				Declaration['property type'] = 'Дома'
+				if(subHeading is not None ):
+					getCountFloors(subHeading,Declaration)
 				fillingFields_Sale_House(soup,Declaration)
 			elif(keyWords[2] == 'коммерческая недвижимость'):
 				Declaration['property type'] = 'Коммерческая недвижимость'
@@ -637,6 +696,8 @@ def parse(html, urlDeclaration):
 					fillingFields_Sale_nonResidential_Garage(soup,Declaration)
 				elif(keyWords[3] == 'дачи, участки'):
 					Declaration['property non-residential type'] = 'Дачи, участки'
+					if(subHeading is not None ):
+						getCountFloors(subHeading,Declaration)
 					fillingFields_Sale_nonResidential_Dacha(soup,Declaration)
 				elif(keyWords[3] == 'другие объекты'):
 					Declaration['property non-residential type'] = 'Другие объекты'
@@ -653,6 +714,8 @@ def parse(html, urlDeclaration):
 			elif(keyWords[2] == 'комнаты'):
 				fillingFields_Rental_Room(soup,Declaration)
 			elif(keyWords[2] == 'дома'):
+				if(subHeading is not None ):
+					getCountFloors(subHeading,Declaration)
 				fillingFields_Rental_House(soup,Declaration)
 			elif(keyWords[2] == 'коммерческая недвижимость'):
 				fillingFields_Rental_Commercial(soup,Declaration)
@@ -679,7 +742,7 @@ def parse(html, urlDeclaration):
 		elif(keyWords[1] == 'сниму'):
 			Declaration['type transaction'] = 'съём'
 			if(keyWords[2] == 'жилая недвижимость'):
-				fillingFields_Rent_Residential_Properties(soup,Declaration)
+				fillingFields_Rent_Residential_Properties(soup,Declaration) 
 	else:
 		pass
 
@@ -704,28 +767,29 @@ def main():
 			href = a['href']
 			urlDeclaration = baseUrl + href
 			print(urlDeclaration)
+			subHeading = j.find('div', class_ = 'col-md-9 unpad')
 			htmlDeclaration = get_html(urlDeclaration)
-			parse(htmlDeclaration, urlDeclaration)
-
-
+			parse(htmlDeclaration, urlDeclaration, subHeading)
 
 
 
 if __name__ == '__main__':
-	MassDeclaration = []
-	print('Я работаю, я не завис...')
+	
+	print('Я работаю, я не завис ...')
 	main()
 
 	count = 0
 	with open( 'data.json', 'w', encoding = "utf-8" ) as fp:
-		fp.write( u'{\n' )
-		for i in MassDeclaration:
-			fp.write( u'\t"' + str( count ) + '" : ' )
-			json.dump( i, fp, sort_keys = True, indent = 5, ensure_ascii = False )
-			fp.write( u',\n' )
-			count += 1
-		fp.write( u'\t"count declaration" : ' + str(count-1) + '\n' )
-		fp.write( u'}\n' )
-		fp.close()
+	    fp.write( u'{\n' )
+	    for i in MassDeclaration:
+	        fp.write( u'\t"' + str( count ) + '" : ' )
+	        json.dump( i, fp, sort_keys = True, indent = 5, ensure_ascii = False )
+	        fp.write( u',\n' )
+	        count += 1
+	    fp.write( u'\t"count declaration" : ' + str(count) + '\n' )
+	    fp.write( u'}\n' )
+	    fp.close()
 
-	print( 'Я закончил работу' )
+	print( 'Я закончил работу')
+else:
+	main()
